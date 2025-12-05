@@ -1,12 +1,39 @@
-import { RootProvider } from 'fumadocs-ui/provider/next';
-import './global.css';
-import { Inter } from 'next/font/google';
+import { RootProvider } from "fumadocs-ui/provider/next";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./global.css";
 
 const inter = Inter({
-  subsets: ['latin'],
+  subsets: ["latin"],
 });
 
-export default function Layout({ children }: LayoutProps<'/'>) {
+export const metadata: Metadata = {
+  metadataBase: new URL("https://lazypr.vercel.app"),
+  title: {
+    default: "lazypr — The lazy way to write pull requests",
+    template: "%s | lazypr",
+  },
+  description:
+    "Generate clean, consistent PRs from commits - powered by AI and your git history. Quick install with npm -g lazypr.",
+  authors: [{ name: "Raul Carini", url: "https://www.raulcarini.dev" }],
+  keywords: ["git", "pull request", "CLI", "AI", "developer tools"],
+  openGraph: {
+    url: new URL("https://lazypr.raulcarini.dev"),
+    siteName: "lazypr",
+    images: [
+      {
+        url: "/og-image.webp",
+        width: 1200,
+        height: 630,
+        alt: "lazypr",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+};
+
+export default function Layout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
