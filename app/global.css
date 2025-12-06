@@ -1,3 +1,11 @@
 @import "tailwindcss";
-@import "fumadocs-ui/css/solar.css";
+@import "fumadocs-ui/css/neutral.css";
 @import "fumadocs-ui/css/preset.css";
+
+@theme {
+    --color-fd-primary: oklch(0.75 0.15 145);
+}
+
+.dark {
+    --color-fd-primary: oklch(0.75 0.15 145);
+}
