@@ -1,0 +1,8 @@
+{
+  "title": "Examples",
+  "pages": [
+    "cli-usage",
+    "github-actions",
+    "configuration"
+  ]
+}

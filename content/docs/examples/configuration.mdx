@@ -1,0 +1,224 @@
+---
+title: Configuration
+description: Configuration examples for different use cases
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## Configuration File
+
+LazyPR stores configuration in `~/.lazypr`. You can edit this file directly or use the `lazypr config` commands.
+
+## Minimal Configuration
+
+The simplest setup to get started. Perfect for personal projects and first-time users.
+
+```bash title="~/.lazypr"
+# LazyPR Minimal Configuration
+# The only required setting is your API key
+
+GROQ_API_KEY=your-groq-api-key-here
+
+# Provider defaults to groq if not specified
+# PROVIDER=groq
+```
+
+<Callout type="info">
+  Get a free API key at [console.groq.com](https://console.groq.com)
+</Callout>
+
+### Setting Up Minimal Config
+
+```bash
+# Set your API key
+lazypr config set GROQ_API_KEY=gsk_xxxxxxxxxxxxx
+
+# Verify configuration
+lazypr config list
+```
+
+## Team Configuration
+
+Standardized configuration for team environments. Ensures consistent PR descriptions across all team members.
+
+```bash title="~/.lazypr"
+# LazyPR Team Configuration
+# Recommended settings for team consistency
+
+# API Keys
+GROQ_API_KEY=your-groq-api-key-here
+CEREBRAS_API_KEY=your-cerebras-api-key-here
+
+# Provider Settings
+PROVIDER=groq
+MODEL=llama-3.3-70b-versatile
+
+# Team Standards
+DEFAULT_BRANCH=main
+LOCALE=en
+FILTER_COMMITS=true
+
+# Context for consistent style
+CONTEXT=Please review this PR carefully and provide feedback
+
+# Reliability Settings
+MAX_RETRIES=3
+TIMEOUT=30000
+```
+
+### Team Setup Instructions
+
+<Tabs items={['Individual Setup', 'Shared Config']}>
+  <Tab value="Individual Setup">
+    Each team member configures their own machine:
+    ```bash
+    # Set required values
+    lazypr config set GROQ_API_KEY=gsk_xxxxxxxxxxxxx
+    lazypr config set PROVIDER=groq
+    lazypr config set MODEL=llama-3.3-70b-versatile
+    lazypr config set DEFAULT_BRANCH=main
+    lazypr config set LOCALE=en
+    lazypr config set FILTER_COMMITS=true
+    lazypr config set MAX_RETRIES=3
+    lazypr config set TIMEOUT=30000
+    ```
+  </Tab>
+  <Tab value="Shared Config">
+    Distribute a config file to the team:
+    ```bash
+    # Create config file
+    cat > ~/.lazypr << 'EOF'
+    GROQ_API_KEY=YOUR_KEY_HERE
+    PROVIDER=groq
+    MODEL=llama-3.3-70b-versatile
+    DEFAULT_BRANCH=main
+    LOCALE=en
+    FILTER_COMMITS=true
+    MAX_RETRIES=3
+    TIMEOUT=30000
+    EOF
+
+    # Team members replace the API key
+    lazypr config set GROQ_API_KEY=their-actual-key
+    ```
+  </Tab>
+</Tabs>
+
+<Callout type="warn">
+  Never commit API keys to version control. Each team member should have their own key.
+</Callout>
+
+## Multi-Provider Configuration
+
+Configuration supporting multiple AI providers with easy switching. Ideal for production environments and cost optimization.
+
+```bash title="~/.lazypr"
+# LazyPR Multi-Provider Configuration
+# Supports multiple providers for flexibility and fallback
+
+# Provider API Keys
+GROQ_API_KEY=your-groq-api-key-here
+CEREBRAS_API_KEY=your-cerebras-api-key-here
+
+# Active Provider (groq or cerebras)
+PROVIDER=groq
+
+# Model Selection
+MODEL=llama-3.3-70b-versatile
+
+# Common Settings
+DEFAULT_BRANCH=main
+FILTER_COMMITS=true
+
+# Increased reliability for production
+MAX_RETRIES=5
+TIMEOUT=45000
+```
+
+### Switching Providers
+
+```bash
+# Switch to Cerebras
+lazypr config set PROVIDER=cerebras
+
+# Or use flag for one-time override
+lazypr main --provider cerebras
+
+# Check current provider
+lazypr config get PROVIDER
+```
+
+### Manual Fallback Strategy
+
+```bash
+# Try Groq first, fallback to Cerebras
+lazypr main --provider groq || lazypr main --provider cerebras
+```
+
+## Configuration Reference
+
+### All Available Settings
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `GROQ_API_KEY` | Groq API key | - |
+| `CEREBRAS_API_KEY` | Cerebras API key | - |
+| `PROVIDER` | AI provider (`groq` or `cerebras`) | `groq` |
+| `MODEL` | Model to use | Provider default |
+| `DEFAULT_BRANCH` | Target branch for comparison | `master` |
+| `LOCALE` | Output language | `en` |
+| `FILTER_COMMITS` | Filter merge/dependency commits | `true` |
+| `CONTEXT` | Custom context for AI | - |
+| `MAX_RETRIES` | Retry attempts on failure | `3` |
+| `TIMEOUT` | Request timeout in ms | `30000` |
+
+### Config Commands
+
+```bash
+# Set a value
+lazypr config set SETTING=value
+
+# Get a value
+lazypr config get SETTING
+
+# List all settings
+lazypr config list
+
+# Remove a setting
+lazypr config set SETTING=
+```
+
+## Environment Variables
+
+You can also configure LazyPR using environment variables. These override config file settings.
+
+```bash
+# In your shell profile (~/.bashrc, ~/.zshrc)
+export GROQ_API_KEY=gsk_xxxxxxxxxxxxx
+export LAZYPR_PROVIDER=groq
+export LAZYPR_MODEL=llama-3.3-70b-versatile
+```
+
+<Callout type="info">
+  Environment variables take precedence over config file settings.
+</Callout>
+
+## Security Best Practices
+
+1. **Never commit API keys** - Use environment variables or local config files
+2. **Use separate keys** - Each team member should have their own API key
+3. **Rotate keys regularly** - Update keys periodically for security
+4. **Limit key permissions** - Use keys with minimal required permissions
+
+## Validation
+
+Verify your configuration is correct:
+
+```bash
+# Check all settings
+lazypr config list
+
+# Test with a dry run
+lazypr main -u  # Shows token usage to verify API connection
+```

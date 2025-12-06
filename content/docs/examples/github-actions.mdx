@@ -1,0 +1,359 @@
+---
+title: GitHub Actions
+description: Automated PR workflows with GitHub Actions
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+## Overview
+
+LazyPR integrates seamlessly with GitHub Actions to automate PR description generation. These workflows help teams maintain consistent, high-quality PR documentation.
+
+## Setup
+
+<Steps>
+<Step>
+### Add API Key Secret
+
+Go to your repository **Settings > Secrets and variables > Actions** and add:
+
+- `GROQ_API_KEY` - Your Groq API key
+- `CEREBRAS_API_KEY` - (Optional) For fallback support
+
+</Step>
+<Step>
+### Create Workflow File
+
+Copy one of the workflow examples below to `.github/workflows/` in your repository.
+
+</Step>
+<Step>
+### Test the Workflow
+
+Create a pull request to trigger the workflow and verify it works correctly.
+
+</Step>
+</Steps>
+
+## Auto-Update PR
+
+Updates PR title and description automatically when new commits are pushed.
+
+```yaml title=".github/workflows/auto-update-pr.yml"
+name: Auto-Update PR
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - run: npm install -g lazypr
+
+      - name: Generate and update PR
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat <<EOF > ~/.lazypr
+          GROQ_API_KEY=${GROQ_API_KEY}
+          PROVIDER=groq
+          EOF
+
+          lazypr ${{ github.event.pull_request.base.ref }} > pr.txt
+
+          TITLE=$(head -n 1 pr.txt | sed 's/^# //')
+          BODY=$(tail -n +2 pr.txt)
+
+          gh pr edit ${{ github.event.pull_request.number }} \
+            --title "$TITLE" \
+            --body "$BODY"
+```
+
+<Callout type="info">
+  The `fetch-depth: 0` ensures full git history is available for commit analysis.
+</Callout>
+
+## Auto-Create PR
+
+Automatically creates pull requests when pushing to feature or fix branches.
+
+```yaml title=".github/workflows/auto-create-pr.yml"
+name: Auto-Create PR
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - 'fix/**'
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - run: npm install -g lazypr
+
+      - name: Create PR if needed
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat <<EOF > ~/.lazypr
+          GROQ_API_KEY=${GROQ_API_KEY}
+          PROVIDER=groq
+          EOF
+
+          # Check if PR already exists
+          EXISTING=$(gh pr list --head "${{ github.ref_name }}" --json number -q '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            echo "PR #$EXISTING already exists"
+            exit 0
+          fi
+
+          lazypr main > pr.txt
+
+          TITLE=$(head -n 1 pr.txt | sed 's/^# //')
+          BODY=$(tail -n +2 pr.txt)
+
+          gh pr create \
+            --title "$TITLE" \
+            --body "$BODY" \
+            --base main
+```
+
+<Callout type="warn">
+  This workflow only triggers on branches matching `feature/**` or `fix/**`. Adjust the pattern to match your branching strategy.
+</Callout>
+
+## Multi-Provider Fallback
+
+Tries Groq first, falls back to Cerebras if it fails. Provides resilience for production workflows.
+
+```yaml title=".github/workflows/multi-provider-fallback.yml"
+name: PR with Fallback
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - run: npm install -g lazypr
+
+      - name: Generate with fallback
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Try Groq first
+          cat <<EOF > ~/.lazypr
+          GROQ_API_KEY=${GROQ_API_KEY}
+          PROVIDER=groq
+          EOF
+
+          if lazypr ${{ github.event.pull_request.base.ref }} > pr.txt 2>/dev/null; then
+            echo "Generated with Groq"
+          else
+            # Fallback to Cerebras
+            cat <<EOF > ~/.lazypr
+            CEREBRAS_API_KEY=${CEREBRAS_API_KEY}
+            PROVIDER=cerebras
+          EOF
+
+            if lazypr ${{ github.event.pull_request.base.ref }} > pr.txt 2>/dev/null; then
+              echo "Generated with Cerebras (fallback)"
+            else
+              echo "Both providers failed"
+              exit 1
+            fi
+          fi
+
+          TITLE=$(head -n 1 pr.txt | sed 's/^# //')
+          BODY=$(tail -n +2 pr.txt)
+
+          gh pr edit ${{ github.event.pull_request.number }} \
+            --title "$TITLE" \
+            --body "$BODY"
+```
+
+<Callout type="info">
+  Both `GROQ_API_KEY` and `CEREBRAS_API_KEY` must be configured in repository secrets.
+</Callout>
+
+## PR Validation
+
+Validates PR description quality and suggests improvements if too short.
+
+```yaml title=".github/workflows/pr-validation.yml"
+name: PR Validation
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - run: npm install -g lazypr
+
+      - name: Validate PR description
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Get current PR body
+          BODY=$(gh pr view ${{ github.event.pull_request.number }} --json body -q '.body')
+
+          # Check minimum length (100 characters)
+          if [ ${#BODY} -lt 100 ]; then
+            echo "PR description is too short"
+
+            # Generate suggestion
+            cat <<EOF > ~/.lazypr
+            GROQ_API_KEY=${GROQ_API_KEY}
+            PROVIDER=groq
+          EOF
+
+            lazypr ${{ github.event.pull_request.base.ref }} > suggestion.txt
+
+            # Post comment with suggestion
+            gh pr comment ${{ github.event.pull_request.number }} \
+              --body "## Suggested PR Description
+
+            Your PR description seems brief. Here's a suggested improvement:
+
+            ---
+
+            $(cat suggestion.txt)
+
+            ---
+
+            *Generated by LazyPR*"
+
+            exit 1
+          fi
+
+          echo "PR description looks good!"
+```
+
+## Customization Tips
+
+### Adding Context
+
+Include project-specific context in your workflows:
+
+```yaml
+- name: Generate with context
+  run: |
+    lazypr main -c "This is a monorepo with shared packages" > pr.txt
+```
+
+### Using Templates
+
+Enable template support for consistent formatting:
+
+```yaml
+- name: Generate with template
+  run: |
+    lazypr main --template > pr.txt
+```
+
+### Custom Branch Patterns
+
+Adjust triggers for your branching strategy:
+
+```yaml
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - 'bugfix/**'
+      - 'hotfix/**'
+      - 'release/**'
+```
+
+## Troubleshooting
+
+### Workflow Not Triggering
+
+- Check branch patterns match your naming convention
+- Verify the workflow file is in `.github/workflows/`
+- Ensure the workflow has correct permissions
+
+### API Key Errors
+
+- Confirm secrets are added to repository settings
+- Check secret names match exactly (case-sensitive)
+- Verify API keys are valid and not expired
+
+### Permission Denied
+
+Add required permissions to your workflow:
+
+```yaml
+permissions:
+  pull-requests: write
+  contents: read
+```
+
+### Empty PR Description
+
+- Ensure `fetch-depth: 0` is set for full git history
+- Check there are commits between branches
+- Verify the base branch name is correct

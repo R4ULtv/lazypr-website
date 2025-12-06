@@ -1,0 +1,244 @@
+---
+title: CLI Usage
+description: Command-line usage patterns from basic to advanced
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## Basic Usage
+
+The simplest way to use LazyPR is to run it in your repository:
+
+```bash
+lazypr
+```
+
+This analyzes commits between your current branch and main, generates a professional title and description, and offers to copy the result to your clipboard.
+
+### Branch Targeting
+
+Specify a different target branch to compare against:
+
+```bash
+lazypr develop     # Compare against develop
+lazypr production  # Compare against production
+lazypr release-v2  # Compare against release branch
+```
+
+### Using PR Templates
+
+LazyPR automatically searches for templates in standard locations:
+
+- `.github/pull_request_template.md`
+- `.github/PULL_REQUEST_TEMPLATE/`
+
+Enable template usage with the `--template` flag:
+
+```bash
+lazypr main --template
+```
+
+If multiple templates exist, LazyPR shows an interactive selector.
+
+## Common Workflows
+
+<Tabs items={['Quick PR', 'Review First', 'Git Alias']}>
+  <Tab value="Quick PR">
+    Generate and copy to clipboard immediately:
+    ```bash
+    lazypr main
+    # Select "Copy to clipboard" when prompted
+    ```
+  </Tab>
+  <Tab value="Review First">
+    Save to a file for review before using:
+    ```bash
+    lazypr main > pr-description.txt
+    # Review and edit pr-description.txt
+    # Then create PR manually
+    ```
+  </Tab>
+  <Tab value="Git Alias">
+    Create a git alias for faster access:
+    ```bash
+    git config --global alias.pr '!lazypr'
+    # Now use: git pr main
+    ```
+  </Tab>
+</Tabs>
+
+## Advanced Options
+
+### Commit Filtering
+
+By default, LazyPR filters out merge commits, dependency updates, and formatting changes to focus on meaningful content:
+
+```bash
+# Include all commits without filtering
+lazypr main --no-filter
+```
+
+### Locale Support
+
+Generate PR descriptions in multiple languages:
+
+```bash
+lazypr main -l es  # Spanish
+lazypr main -l fr  # French
+lazypr main -l ja  # Japanese
+lazypr main -l de  # German
+lazypr main -l zh  # Chinese
+lazypr main -l pt  # Portuguese
+lazypr main -l ru  # Russian
+lazypr main -l ko  # Korean
+```
+
+### Custom Models
+
+Switch between providers and models for different use cases:
+
+<Tabs items={['Groq', 'Cerebras']}>
+  <Tab value="Groq">
+    ```bash
+    # Default model
+    lazypr main --provider groq
+
+    # Specify model
+    lazypr config set MODEL=llama-3.3-70b-versatile
+    lazypr config set MODEL=llama-3.1-8b-instant  # Faster
+    ```
+  </Tab>
+  <Tab value="Cerebras">
+    ```bash
+    lazypr main --provider cerebras
+    ```
+  </Tab>
+</Tabs>
+
+### Adding Context
+
+Guide the AI with additional context about your PR:
+
+```bash
+# Explain the purpose
+lazypr main -c "This PR fixes a critical security vulnerability"
+
+# Note breaking changes
+lazypr main -c "Breaking change: API v1 is deprecated"
+
+# Specify audience
+lazypr main -c "Written for external contributors"
+```
+
+<Callout type="info">
+  Context is limited to 200 characters. Use it for high-level guidance.
+</Callout>
+
+## Scripting & Automation
+
+### Output Redirection
+
+Save output directly to a file:
+
+```bash
+lazypr main > pr.txt
+```
+
+### Conditional Generation
+
+Only generate if there are commits to process:
+
+```bash
+if git log main..HEAD --oneline | grep -q .; then
+  lazypr main
+fi
+```
+
+### Batch Processing
+
+Process multiple branches:
+
+```bash
+for branch in feature/auth feature/api feature/ui; do
+  git checkout "$branch"
+  lazypr main > "pr-${branch##*/}.txt"
+done
+```
+
+## Multiple Templates
+
+Organize templates by PR type in `.github/PULL_REQUEST_TEMPLATE/`:
+
+```
+.github/
+  PULL_REQUEST_TEMPLATE/
+    feature.md
+    bugfix.md
+    hotfix.md
+    release.md
+```
+
+When using `--template`, LazyPR will prompt you to select the appropriate template.
+
+## Git Hooks Integration
+
+### Pre-push Hook
+
+Auto-generate PR description before pushing:
+
+```bash
+# .git/hooks/pre-push
+#!/bin/bash
+if [[ $(git rev-parse --abbrev-ref HEAD) != "main" ]]; then
+  lazypr main > .pr-description.txt
+  echo "PR description saved to .pr-description.txt"
+fi
+```
+
+### Prepare-commit-msg Hook
+
+Add PR-ready summaries to commits:
+
+```bash
+# .git/hooks/prepare-commit-msg
+#!/bin/bash
+# Only for feature branches
+if [[ $(git rev-parse --abbrev-ref HEAD) == feature/* ]]; then
+  # Your hook logic here
+fi
+```
+
+## Troubleshooting
+
+### "Not a git repository"
+
+Make sure you're inside a git repository:
+
+```bash
+git status  # Should not error
+```
+
+### "No commits found"
+
+Your branch needs commits that differ from the target:
+
+```bash
+git log main..HEAD --oneline  # Should show commits
+```
+
+### API Key Issues
+
+Verify your API key is configured:
+
+```bash
+lazypr config list  # Check GROQ_API_KEY or CEREBRAS_API_KEY
+```
+
+### Rate Limiting
+
+If you hit rate limits, wait a few minutes or switch providers:
+
+```bash
+lazypr main --provider cerebras  # Try alternate provider
+```
