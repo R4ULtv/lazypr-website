@@ -10,7 +10,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://lazypr.vercel.app"),
   title: {
-    default: "lazypr — The lazy way to write pull requests",
+    default: "lazypr - The lazy way to write pull requests",
     template: "%s | lazypr",
   },
   description:
