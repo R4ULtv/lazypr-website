@@ -1,0 +1,204 @@
+---
+title: Commit Filtering
+description: How LazyPR intelligently filters commits for better PR descriptions
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## What is Commit Filtering?
+
+Commit filtering is LazyPR's intelligent feature that automatically excludes noise from your PR descriptions. It analyzes commit messages and patterns to focus on meaningful changes.
+
+## What Gets Filtered?
+
+By default, LazyPR excludes:
+
+### Merge Commits
+
+```
+Merge branch 'main' into feature-branch
+Merge pull request #123 from user/branch
+```
+
+Merge commits add no meaningful information about your changes.
+
+### Dependency Updates
+
+```
+chore: update dependencies
+chore: bump package.json versions
+build: upgrade eslint to 8.0.0
+```
+
+Version bumps and dependency updates clutter PR descriptions without adding context about your work.
+
+### Formatting Changes
+
+```
+style: fix linting errors
+style: run prettier
+chore: format code
+```
+
+Code formatting and style fixes don't represent functional changes.
+
+### Build and CI Changes
+
+```
+ci: update GitHub Actions workflow
+build: modify webpack config
+```
+
+Infrastructure changes are often less important than feature work.
+
+## Why Filter?
+
+**Cleaner Descriptions**: Focus on what matters - your actual feature work and bug fixes.
+
+**Better AI Output**: Filtering helps the AI generate more focused, relevant descriptions.
+
+**Reduced Token Usage**: Fewer commits mean fewer tokens consumed and faster generation.
+
+**Professional PRs**: Your PRs highlight important changes, not noise.
+
+## Disabling Filtering
+
+Sometimes you want to include all commits:
+
+### Per-Run Disable
+
+Use the `--no-filter` flag:
+
+```bash
+lazypr main --no-filter
+```
+
+This includes all commits for this single run.
+
+### Global Disable
+
+Turn off filtering permanently:
+
+```bash
+lazypr config set FILTER_COMMITS=false
+```
+
+Re-enable anytime:
+
+```bash
+lazypr config set FILTER_COMMITS=true
+```
+
+<Callout type="warn">
+  Disabling filtering may result in verbose, cluttered PR descriptions. Use sparingly.
+</Callout>
+
+## When to Disable Filtering
+
+Consider disabling filtering when:
+
+**Dependency update PRs**: If the PR is specifically about dependency updates:
+
+```bash
+lazypr main --no-filter
+```
+
+**Infrastructure changes**: When build/CI modifications are the main focus.
+
+**Small refactors**: When formatting or style changes are the primary work.
+
+**Debugging**: To see exactly which commits are being analyzed.
+
+## How Filtering Works
+
+LazyPR uses pattern matching on commit messages to identify filtered commits. It looks for:
+
+1. **Keywords**: merge, dependency, deps, bump, format, prettier, eslint, ci, build
+2. **Patterns**: Version numbers, package names, automated commit signatures
+3. **Conventional commits**: Specific types like `chore:`, `style:`, `build:`, `ci:`
+
+## Example: Filtered vs Unfiltered
+
+**Commits in branch**:
+
+```
+feat: add user authentication
+fix: resolve login redirect bug
+chore: update dependencies
+Merge branch 'main' into feature
+style: format auth module
+test: add auth integration tests
+```
+
+**With filtering** (default):
+
+```
+LazyPR analyzes:
+- feat: add user authentication
+- fix: resolve login redirect bug
+- test: add auth integration tests
+```
+
+**Without filtering** (`--no-filter`):
+
+```
+LazyPR analyzes all 6 commits including:
+- chore: update dependencies
+- Merge branch 'main' into feature
+- style: format auth module
+```
+
+## Smart Filtering
+
+LazyPR's filtering is smart enough to:
+- Preserve important chore commits that add significant value
+- Include dependency updates if they fix security issues
+- Keep formatting commits if they're part of a larger refactor
+
+The AI considers context, not just keywords.
+
+## Custom Filtering Logic
+
+Currently, LazyPR doesn't support custom filtering rules. The built-in logic covers most common cases. If you need specific commits excluded, consider:
+
+1. Using `--no-filter` and manually editing the output
+2. Structuring commit messages to match filtering patterns
+3. Creating separate branches for filtered vs. important commits
+
+## Best Practices
+
+### Write Clear Commit Messages
+
+Use conventional commits to help filtering work effectively:
+
+```bash
+# Will be included
+feat: add login feature
+fix: resolve security bug
+
+# Will be filtered
+chore: update packages
+style: run formatter
+```
+
+### Separate Concerns
+
+Keep infrastructure and feature work in separate branches when possible:
+
+```bash
+# Feature branch - filtering works great
+git checkout -b feature/auth
+[make feature commits]
+
+# Separate dependency update branch
+git checkout -b chore/deps
+[update dependencies]
+```
+
+### Review Before Submitting
+
+Always review the generated PR description. If important commits were filtered, regenerate with `--no-filter` and manually edit.
+
+<Callout type="info">
+  Filtering is enabled by default because it produces better results 95% of the time. Disable only when needed.
+</Callout>

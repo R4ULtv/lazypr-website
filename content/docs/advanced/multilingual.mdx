@@ -1,0 +1,214 @@
+---
+title: Multilingual Support
+description: Generate PR descriptions in 13 different languages
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## Supported Languages
+
+LazyPR can generate pull request descriptions in 13 languages:
+
+| Code | Language | Native Name | Flag |
+|------|----------|-------------|------|
+| `en` | English | English | 🇬🇧 |
+| `es` | Spanish | Español | 🇪🇸 |
+| `pt` | Portuguese | Português | 🇵🇹 |
+| `fr` | French | Français | 🇫🇷 |
+| `de` | German | Deutsch | 🇩🇪 |
+| `it` | Italian | Italiano | 🇮🇹 |
+| `ja` | Japanese | 日本語 | 🇯🇵 |
+| `ko` | Korean | 한국어 | 🇰🇷 |
+| `zh` | Chinese | 中文 | 🇨🇳 |
+| `ru` | Russian | Русский | 🇷🇺 |
+| `nl` | Dutch | Nederlands | 🇳🇱 |
+| `pl` | Polish | Polski | 🇵🇱 |
+| `tr` | Turkish | Türkçe | 🇹🇷 |
+
+<Callout type="success">
+  **Default language**: English (`en`)
+</Callout>
+
+## Setting Default Language
+
+Configure your preferred language globally:
+
+```bash
+lazypr config set LOCALE=es  # Spanish
+lazypr config set LOCALE=ja  # Japanese
+lazypr config set LOCALE=de  # German
+```
+
+All subsequent PR generations will use your configured language:
+
+```bash
+lazypr main  # Uses your configured locale
+```
+
+## One-Time Language Override
+
+Generate a PR in a different language without changing your config:
+
+```bash
+lazypr main -l fr  # French for this run only
+lazypr main -l zh  # Chinese for this run only
+```
+
+This is useful when:
+- Working on international projects
+- Collaborating with non-native speakers
+- Creating PRs for specific regional teams
+
+## Example Outputs
+
+### English (en)
+
+```markdown
+feat: Add user authentication
+
+## Changes
+- Implement OAuth 2.0 authentication flow
+- Add JWT token management
+- Create login and logout endpoints
+```
+
+### Spanish (es)
+
+```markdown
+feat: Agregar autenticación de usuario
+
+## Cambios
+- Implementar flujo de autenticación OAuth 2.0
+- Agregar gestión de tokens JWT
+- Crear endpoints de inicio y cierre de sesión
+```
+
+### Japanese (ja)
+
+```markdown
+feat: ユーザー認証を追加
+
+## 変更内容
+- OAuth 2.0認証フローの実装
+- JWTトークン管理の追加
+- ログイン・ログアウトエンドポイントの作成
+```
+
+### French (fr)
+
+```markdown
+feat: Ajouter l'authentification utilisateur
+
+## Modifications
+- Implémenter le flux d'authentification OAuth 2.0
+- Ajouter la gestion des tokens JWT
+- Créer les endpoints de connexion et déconnexion
+```
+
+## Use Cases
+
+### International Teams
+
+Teams distributed across regions can use their preferred language:
+
+```bash
+# Developer in Spain
+lazypr config set LOCALE=es
+
+# Developer in Japan
+lazypr config set LOCALE=ja
+
+# Developer in Germany
+lazypr config set LOCALE=de
+```
+
+Everyone works in their native language, improving clarity and reducing miscommunication.
+
+### Localized Projects
+
+Projects with language-specific branches or repositories:
+
+```bash
+# Feature for English market
+git checkout feature/us-payments
+lazypr main -l en
+
+# Feature for Japanese market
+git checkout feature/jp-payments
+lazypr main -l ja
+```
+
+### Learning and Documentation
+
+Non-native English speakers can read and understand PR descriptions in their language, accelerating onboarding and collaboration.
+
+## Best Practices
+
+### Be Consistent
+
+Pick a language for your project and stick to it. Mixed-language PRs can be confusing:
+
+**Good** (consistent):
+```
+All PRs in English
+All PRs in Spanish
+```
+
+**Confusing** (mixed):
+```
+Some PRs in English, some in French
+```
+
+### Consider Your Audience
+
+Choose the language your reviewers and stakeholders understand best. If your team is international but uses English, stick with English.
+
+### Use Context for Better Results
+
+Adding context in the target language can improve output quality:
+
+```bash
+lazypr main -l es -c "Enfocarse en cambios de seguridad"
+```
+
+### Conventional Commit Titles
+
+Keep commit prefixes (`feat:`, `fix:`) in English even when descriptions are in other languages. This maintains compatibility with tooling:
+
+```markdown
+# Good
+feat: Añadir autenticación de usuario
+
+# Less compatible with tooling
+característica: Añadir autenticación de usuario
+```
+
+<Callout type="info">
+  LazyPR will automatically use English conventional commit prefixes in titles even when the description is in another language.
+</Callout>
+
+## Limitations
+
+**Code examples**: Code snippets, variable names, and technical terms remain in their original language/format. Only descriptive text is translated.
+
+**Quality varies**: Output quality for less common languages may vary. English and major European/Asian languages typically produce excellent results.
+
+**Context understanding**: The AI understands commit messages in any language but works best when commits are in English or the target language.
+
+## Troubleshooting
+
+**Strange characters**: Ensure your terminal supports UTF-8 encoding for proper display of non-Latin characters.
+
+**Poor translation quality**: Try being more explicit in commit messages or adding context with the `-c` flag.
+
+**Language not working**: Verify you're using the correct language code from the supported list above.
+
+## Checking Current Language
+
+View your configured language:
+
+```bash
+lazypr config get LOCALE
+```
+
+If not set, LazyPR defaults to English (`en`).

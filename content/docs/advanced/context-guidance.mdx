@@ -1,0 +1,294 @@
+---
+title: Context Guidance
+description: Customize PR style and tone with context
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## What is Context?
+
+Context is custom style guidance you provide to influence how LazyPR generates PR descriptions. It's like giving the AI a "personality" or "instructions" for writing PRs.
+
+Maximum length: **200 characters**
+
+## Setting Global Context
+
+Configure context that applies to all PR generations:
+
+```bash
+lazypr config set CONTEXT="Use conventional commits format and keep descriptions concise"
+```
+
+Every time you run `lazypr`, this guidance influences the output.
+
+## Per-Run Context
+
+Override global context for a single generation:
+
+```bash
+lazypr main -c "Focus on security improvements"
+lazypr main -c "Emphasize performance benefits"
+lazypr main -c "Keep it brief, max 3 bullet points"
+```
+
+Per-run context takes precedence over global context.
+
+## Effective Context Examples
+
+### Focus on Style
+
+```bash
+# Concise, bullet-point style
+lazypr main -c "Keep descriptions concise with bullet points"
+
+# Detailed explanations
+lazypr main -c "Provide detailed explanations for each change"
+
+# Technical focus
+lazypr main -c "Use technical terminology and avoid simplification"
+```
+
+### Emphasize Specific Aspects
+
+```bash
+# Business value
+lazypr main -c "Emphasize business value and user impact"
+
+# Technical implementation
+lazypr main -c "Focus on technical implementation details"
+
+# Testing and quality
+lazypr main -c "Highlight testing approach and quality improvements"
+```
+
+### Audience-Specific
+
+```bash
+# Non-technical stakeholders
+lazypr main -c "Write for non-technical stakeholders"
+
+# Senior developers
+lazypr main -c "Assume senior developer audience"
+
+# Product managers
+lazypr main -c "Focus on product features and user value"
+```
+
+### Team Standards
+
+```bash
+# Conventional commits
+lazypr main -c "Follow conventional commits specification"
+
+# Include ticket numbers
+lazypr main -c "Reference ticket numbers and user stories"
+
+# Testing requirements
+lazypr main -c "Always mention testing strategy"
+```
+
+## Context Best Practices
+
+### Be Specific
+
+**Good** (specific):
+```bash
+"Focus on security improvements and mention any vulnerabilities addressed"
+```
+
+**Less effective** (vague):
+```bash
+"Make it good"
+```
+
+### Keep It Short
+
+Remember the 200-character limit. Be concise:
+
+**Good** (concise):
+```bash
+"Emphasize performance gains and include metrics"
+```
+
+**Too long**:
+```bash
+"I want you to really emphasize the performance gains we've made and include specific metrics wherever possible and also mention any trade-offs we had to make and explain the reasoning behind technical decisions"
+```
+
+### Match Your Team's Voice
+
+Analyze your team's existing PRs and create context that matches:
+
+```bash
+# Formal, corporate
+lazypr main -c "Professional tone, formal language"
+
+# Casual, startup
+lazypr main -c "Casual tone, focus on impact"
+
+# Technical, open-source
+lazypr main -c "Technical detail, community-friendly"
+```
+
+<Callout type="info">
+  Great context guidance aligns AI output with your team's existing PR style and standards.
+</Callout>
+
+## Examples with Output
+
+### Without Context
+
+```bash
+lazypr main
+```
+
+**Output**:
+```markdown
+feat: Add user authentication
+
+## Changes
+- Implement OAuth 2.0 authentication flow
+- Add JWT token management
+- Create login and logout endpoints
+- Add session persistence
+```
+
+### With "Keep it brief" Context
+
+```bash
+lazypr main -c "Keep descriptions very brief, max 3 points"
+```
+
+**Output**:
+```markdown
+feat: Add user authentication
+
+## Changes
+- Implement OAuth 2.0 flow
+- Add JWT token management
+- Create authentication endpoints
+```
+
+### With "Business focus" Context
+
+```bash
+lazypr main -c "Emphasize business value and user impact"
+```
+
+**Output**:
+```markdown
+feat: Add user authentication
+
+## Changes
+- Enable secure user login via OAuth 2.0, improving security and user trust
+- Implement session management for seamless user experience
+- Support multiple OAuth providers, increasing user convenience
+
+## Impact
+Provides enterprise-grade security while reducing friction in the login process.
+```
+
+### With "Technical detail" Context
+
+```bash
+lazypr main -c "Include technical implementation details"
+```
+
+**Output**:
+```markdown
+feat: Add user authentication
+
+## Changes
+- Implement OAuth 2.0 authorization code flow with PKCE
+- Add JWT token generation using RS256 algorithm
+- Create RESTful endpoints: POST /auth/login, POST /auth/logout
+- Implement Redis-based session store with 24h TTL
+```
+
+## Common Use Cases
+
+### Security PRs
+
+```bash
+lazypr main -c "Highlight security improvements and vulnerabilities fixed"
+```
+
+### Performance PRs
+
+```bash
+lazypr main -c "Focus on performance gains with specific metrics"
+```
+
+### Refactoring PRs
+
+```bash
+lazypr main -c "Explain refactoring rationale and benefits"
+```
+
+### Bug Fix PRs
+
+```bash
+lazypr main -c "Describe the bug, root cause, and fix approach"
+```
+
+## Combining with Other Features
+
+Context works alongside other LazyPR features:
+
+```bash
+# Context + Template + Language
+lazypr main --template -l es -c "Enfoque en seguridad"
+
+# Context + GitHub CLI + Token usage
+lazypr main --gh -c "Keep it brief" -u
+```
+
+## Managing Context
+
+### View Current Context
+
+```bash
+lazypr config get CONTEXT
+```
+
+### Clear Context
+
+Remove global context:
+
+```bash
+lazypr config set CONTEXT=""
+```
+
+Or just use per-run context to override:
+
+```bash
+lazypr main -c "Different guidance for this PR"
+```
+
+## Limitations
+
+**Character limit**: 200 characters maximum. LazyPR truncates longer context.
+
+**Not instructions**: Context is guidance, not strict instructions. The AI interprets context creatively.
+
+**Commit-dependent**: Output quality still depends on your commit messages. Great context can't fix vague commits.
+
+<Callout type="warn">
+  Context influences but doesn't guarantee specific output. Review and edit generated PRs as needed.
+</Callout>
+
+## Tips for Success
+
+1. **Experiment**: Try different context styles to see what works for your team
+2. **Iterate**: Refine your context based on results
+3. **Be consistent**: Use similar context for similar types of PRs
+4. **Combine approaches**: Use global context for team standards, per-run for special cases
+5. **Document**: Share effective context examples with your team
+
+## Troubleshooting
+
+**Context not working**: Ensure your context is clear and specific. Vague guidance produces minimal change.
+
+**Output too different**: Your context may be too prescriptive. Try more general guidance.
+
+**Character limit**: If truncated, prioritize the most important guidance first.
