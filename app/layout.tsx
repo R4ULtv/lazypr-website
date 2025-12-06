@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -48,6 +49,7 @@ export default function Layout({ children }: LayoutProps<"/">) {
     >
       <body className={`antialiased flex flex-col min-h-screen`}>
         <RootProvider>{children}</RootProvider>
+        <Analytics />
       </body>
     </html>
   );
