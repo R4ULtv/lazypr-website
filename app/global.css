@@ -4,6 +4,8 @@
 
 @theme {
     --color-fd-primary: oklch(0.75 0.15 145);
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
 }
 
 .dark {
