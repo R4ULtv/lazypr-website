@@ -1,0 +1,192 @@
+---
+title: AI Providers
+description: Choose and configure AI providers for LazyPR
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+
+## Overview
+
+LazyPR uses AI providers to analyze your commits and generate professional PR descriptions. Choose the provider that best fits your needs based on speed, cost, and availability.
+
+## Provider Comparison
+
+| Provider | Speed | Free Tier | Reliability | Model Options | Setup | Status |
+|----------|-------|-----------|-------------|---------------|-------|--------|
+| Groq (Default) | Fast (1-3s) | Generous | High | Multiple | Easy | ✅ Available |
+| Cerebras | Ultra-fast (&lt;1s) | Varies | High | Multiple | Easy | ✅ Available |
+| OpenAI | Fast (2-4s) | Limited | High | GPT-5 Pro, Mini | Easy | 🚧 Soon |
+| Anthropic (Claude) | Fast (2-4s) | Limited | High | Opus, Sonnet, Haiku | Easy | 🚧 Soon |
+| Google AI (Gemini) | Fast (2-4s) | Generous | High | Gemini Pro, Flash | Easy | 🚧 Soon |
+| Ollama | Variable | Free (Local) | High | Llama, Mistral, etc. | Medium | 🚧 Soon |
+| LM Studio | Variable | Free (Local) | High | Various quantized | Medium | 🚧 Soon |
+
+<Callout type="info">
+  Want to see a specific provider added sooner? Let us know on [GitHub](https://github.com/R4ULtv/lazypr/issues)!
+</Callout>
+
+## Getting Started
+
+### Setting Up Groq (Default)
+
+#### Get Your API Key
+
+1. Visit [console.groq.com](https://console.groq.com)
+2. Sign up or log in to your account
+3. Navigate to API Keys section
+4. Create a new API key
+
+#### Configure LazyPR
+
+```bash
+lazypr config set GROQ_API_KEY=gsk_your_api_key_here
+```
+
+<Callout type="success">
+  Groq offers generous free tier limits, perfect for getting started.
+</Callout>
+
+### Setting Up Cerebras
+
+#### Get Your API Key
+
+1. Visit the Cerebras platform
+2. Create an account and generate an API key
+
+#### Configure LazyPR
+
+```bash
+# Set the API key
+lazypr config set CEREBRAS_API_KEY=your_cerebras_key_here
+
+# Switch to Cerebras provider
+lazypr config set PROVIDER=cerebras
+```
+
+## Switching Providers
+
+Change between providers anytime:
+
+<Tabs items={['Groq', 'Cerebras']}>
+  <Tab value="Groq">
+    ```bash
+    lazypr config set PROVIDER=groq
+    ```
+  </Tab>
+  <Tab value="Cerebras">
+    ```bash
+    lazypr config set PROVIDER=cerebras
+    ```
+  </Tab>
+</Tabs>
+
+Don't forget to set the appropriate API key for your chosen provider (see Getting Started section above).
+
+## Model Selection
+
+Configure which AI model to use:
+
+```bash
+lazypr config set MODEL=llama-3.3-70b
+```
+
+**Default model**: `llama-3.3-70b`
+
+Different providers support different models. Check your provider's documentation for available options.
+
+<Callout type="info">
+  The default model provides an excellent balance of quality and speed for PR generation.
+</Callout>
+
+## Token Usage Tracking
+
+Monitor how many tokens your requests consume with the `-u` flag:
+
+```bash
+lazypr main -u
+```
+
+**Output**:
+
+```
+Generated PR Content
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[PR content here]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Token Usage: 347 tokens
+```
+
+This helps you:
+- Track API costs
+- Optimize commit message lengths
+- Stay within rate limits
+
+## Performance Considerations
+
+### Response Time
+
+Both providers typically respond in 1-3 seconds for standard PRs. Response time depends on:
+- Number of commits
+- Commit message length
+- Provider load
+- Network latency
+
+### Quality vs Speed
+
+The default model (`llama-3.3-70b`) balances quality and speed. If you need faster responses and don't mind slightly shorter descriptions, you might experiment with smaller models (if your provider supports them).
+
+### Rate Limits
+
+Each provider has rate limits:
+- **Free tiers**: Typically sufficient for individual developers (dozens of PRs per day)
+- **Paid tiers**: Higher limits for teams and heavy users
+
+Check your provider's documentation for specific limits.
+
+## Cost Optimization
+
+### Use Commit Filtering
+
+Enable filtering to reduce token usage by excluding irrelevant commits:
+
+```bash
+lazypr config set FILTER_COMMITS=true  # Default
+```
+
+Learn more in the [Commit Filtering](/docs/advanced/commit-filtering) guide.
+
+### Write Concise Commit Messages
+
+Shorter, clearer commit messages consume fewer tokens while maintaining quality:
+
+**Good** (concise):
+```
+feat: add OAuth login
+```
+
+**Less optimal** (verbose):
+
+```
+feat: implemented a complete OAuth 2.0 authentication system with support for multiple providers including detailed error handling and logging
+```
+
+### Track Usage
+
+Regularly use the `-u` flag to monitor consumption and adjust your usage patterns.
+
+## Troubleshooting
+
+**Invalid API Key Error**: Double-check your key is correctly copied and hasn't expired. Generate a new key from your provider's console if needed.
+
+**Rate Limiting**: Free tier accounts may have usage limits. Upgrade your plan or wait for the limit to reset.
+
+**Slow responses**: Check your network connection. If persistent, try switching providers.
+
+**Model not found**: Verify the model name is correct for your chosen provider. Reset to default with:
+
+```bash
+lazypr config set MODEL=llama-3.3-70b
+```

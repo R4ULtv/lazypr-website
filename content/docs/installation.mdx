@@ -1,0 +1,73 @@
+---
+title: Installation
+description: How to install LazyPR on your system
+icon: Download
+---
+
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## Prerequisites
+
+LazyPR requires **Node.js version 20 or higher**. Check your version:
+
+```bash
+node --version
+```
+
+If you need to update Node.js, visit [nodejs.org](https://nodejs.org).
+
+## Install LazyPR
+
+Install LazyPR globally using your preferred package manager:
+
+<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
+  <Tab value="npm">
+    ```bash
+    npm install -g lazypr
+    ```
+  </Tab>
+  <Tab value="pnpm">
+    ```bash
+    pnpm add -g lazypr
+    ```
+  </Tab>
+  <Tab value="yarn">
+    ```bash
+    yarn global add lazypr
+    ```
+  </Tab>
+  <Tab value="bun">
+    ```bash
+    bun add -g lazypr
+    ```
+  </Tab>
+</Tabs>
+
+## Verify Installation
+
+Confirm LazyPR is installed correctly:
+
+```bash
+lazypr --version
+```
+
+You can also use the shorter alias:
+
+```bash
+lzp --version
+```
+
+## First-Time Setup
+
+Before generating your first PR, configure your AI provider API key. LazyPR uses Groq by default:
+
+```bash
+lazypr config set GROQ_API_KEY=your_api_key_here
+```
+
+<Callout type="info">
+  Get your free Groq API key at [console.groq.com](https://console.groq.com).
+</Callout>
+
+You're now ready to generate your first PR! Continue to the [Quick Start](/docs/introduction/quick-start) guide.

@@ -1,0 +1,152 @@
+---
+title: Settings
+description: Customize LazyPR behavior and preferences
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## Configuration Options
+
+LazyPR stores all settings in `~/.lazypr`. You can modify settings using the config command:
+
+```bash
+lazypr config set SETTING_NAME=value
+```
+
+## Available Settings
+
+### PROVIDER
+
+The AI provider to use for generating PR content.
+
+- **Values**: `groq` or `cerebras`
+- **Default**: `groq`
+
+```bash
+lazypr config set PROVIDER=groq
+```
+
+### LOCALE
+
+Default language for generated PR content.
+
+- **Default**: `en` (English)
+- **Supported**: en, es, pt, fr, de, it, ja, ko, zh, ru, nl, pl, tr
+
+```bash
+lazypr config set LOCALE=es
+```
+
+<Callout type="info">
+  You can override the locale for a single run using the `-l` flag.
+</Callout>
+
+### MODEL
+
+The AI model to use for generation.
+
+- **Default**: `llama-3.3-70b`
+- **Provider-specific**: Check your provider's documentation for available models
+
+```bash
+lazypr config set MODEL=llama-3.3-70b
+```
+
+### MAX_RETRIES
+
+Number of retry attempts if a request fails.
+
+- **Default**: `2`
+- **Range**: 0-5
+
+```bash
+lazypr config set MAX_RETRIES=3
+```
+
+### TIMEOUT
+
+Request timeout in milliseconds.
+
+- **Default**: `10000` (10 seconds)
+
+```bash
+lazypr config set TIMEOUT=15000
+```
+
+### FILTER_COMMITS
+
+Enable or disable automatic commit filtering.
+
+- **Default**: `true`
+- **Values**: `true` or `false`
+
+When enabled, LazyPR excludes merge commits, dependency updates, and formatting-only changes.
+
+```bash
+lazypr config set FILTER_COMMITS=false
+```
+
+### CONTEXT
+
+Global style guidance for PR generation (max 200 characters).
+
+- **Default**: None
+- **Example**: "Use conventional commits format and keep descriptions concise"
+
+```bash
+lazypr config set CONTEXT="Focus on business impact in descriptions"
+```
+
+<Callout type="info">
+  Context helps AI tailor the PR style to your team's preferences.
+</Callout>
+
+## Managing Configuration
+
+### View All Settings
+
+```bash
+lazypr config list
+```
+
+### View Specific Setting
+
+```bash
+lazypr config get LOCALE
+```
+
+### Reset to Defaults
+
+Delete the configuration file to reset all settings:
+
+```bash
+rm ~/.lazypr
+```
+
+Then reconfigure your API key:
+
+```bash
+lazypr config set GROQ_API_KEY=your_key_here
+```
+
+## Environment-Specific Configurations
+
+You can maintain different configurations for different projects or environments by:
+
+1. Storing project-specific settings in a script
+2. Setting values before running LazyPR
+
+```bash
+# Example: Use Spanish for international team
+lazypr config set LOCALE=es
+lazypr main
+
+# Then switch back
+lazypr config set LOCALE=en
+```
+
+Or use command-line flags for one-time overrides without changing stored config:
+
+```bash
+lazypr main -l es -c "Keep it brief"
+```

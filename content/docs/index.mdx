@@ -1,13 +1,145 @@
 ---
-title: Hello World
-description: Your first document
+title: Quick Start
+description: Generate professional PR titles and descriptions automatically with AI
+icon: Album
 ---
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Callout } from 'fumadocs-ui/components/callout';
 
-## What is Next?
+## What is LazyPR?
+
+LazyPR is a command-line tool that analyzes your git commits and uses AI to generate professional pull request titles and descriptions. Say goodbye to writing PR descriptions manually - let AI do the heavy lifting.
+
+```npm
+npm install -g lazypr
+```
+
+## Key Features
+
+- **AI-Powered Generation**: Leverages Groq and Cerebras AI to create clear, consistent PR content
+- **Smart Commit Filtering**: Automatically excludes merge commits, dependency updates, and formatting changes
+- **Multi-Language Support**: Generate PRs in 13 different languages
+- **GitHub CLI Integration**: Create pull requests directly with the `--gh` flag
+- **Template Support**: Works seamlessly with your existing PR templates
+
+## Quick Start
+
+Get your first AI-generated PR in seconds:
+
+```bash
+# Configure your API key
+lazypr config set GROQ_API_KEY=your_key_here
+
+# Generate PR content
+lazypr main
+```
+
+<Callout type="info">
+  Use the short alias `lzp` instead of `lazypr` for faster typing.
+</Callout>
+
+## Your First PR Generation
+
+Follow these steps to create your first AI-generated pull request:
+
+<Steps>
+  <Step>
+    ### Navigate to Your Git Repository
+
+    Open your terminal and navigate to a git repository with a feature branch:
+
+    ```bash
+    cd your-project
+    git checkout your-feature-branch
+    ```
+  </Step>
+
+  <Step>
+    ### Run LazyPR
+
+    Generate PR content by specifying your target branch (usually `main` or `master`):
+
+    ```bash
+    lazypr main
+    ```
+
+    LazyPR will analyze all commits unique to your current branch.
+  </Step>
+
+  <Step>
+    ### Review the Generated Content
+
+    LazyPR will display:
+    - A concise, professional PR title
+    - A markdown-formatted description with bullet points
+    - Summary of changes based on your commits
+  </Step>
+
+  <Step>
+    ### Copy to Clipboard
+
+    An interactive menu appears with options:
+    - **Copy title**: Copy just the PR title
+    - **Copy description**: Copy just the description
+    - **Copy both**: Copy title and description together
+    - **Exit**: Close without copying
+
+    Use arrow keys to select and press Enter.
+  </Step>
+</Steps>
+
+## Example Output
+
+When you run `lazypr main`, you'll see output like this:
+
+```
+Analyzing commits...
+Found 5 commits ahead of main
+
+Generated PR Content:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+feat: Add user authentication with OAuth support
+
+## Changes
+- Implement OAuth 2.0 authentication flow
+- Add user session management
+- Create login and logout endpoints
+- Add JWT token generation and validation
+
+## Testing
+Tested OAuth flow with Google and GitHub providers
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+? What would you like to copy?
+❯ Copy title
+  Copy description
+  Copy both
+  Exit
+```
+
+## Default Target Branch
+
+If you don't specify a target branch, LazyPR defaults to `master`:
+
+```bash
+lazypr  # same as: lazypr master
+```
+
+## Next Steps
+
+Now that you've generated your first PR, explore more features:
+- [Configure settings](/docs/settings) to customize behavior
+- [Use templates](/docs/usage/templates) for consistent PR formatting
+- [Try GitHub integration](/docs/usage/github-integration) to create PRs directly
+
+## Explore the Docs
 
 <Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.dev" />
+  <Card title="Installation" href="/docs/installation" description="Install LazyPR on your system" />
+  <Card title="AI Providers" href="/docs/providers" description="Choose AI providers and customize your settings" />
+  <Card title="Usage Guide" href="/docs/usage/basic-commands" description="Learn all the commands and options" />
+  <Card title="Examples" href="/docs/examples/basic-workflow" description="See real-world examples and workflows" />
 </Cards>

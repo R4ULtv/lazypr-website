@@ -1,0 +1,123 @@
+---
+title: What is LazyPR?
+description: Learn about LazyPR and how it transforms your pull request workflow
+icon: CircleQuestionMark
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## Overview
+
+LazyPR is a command-line tool that automatically generates professional pull request titles and descriptions by analyzing your git commits using AI. It eliminates the tedious task of writing PR descriptions manually, saving time while maintaining consistency and quality.
+
+## The Problem
+
+Writing good pull requests is time-consuming:
+
+- **Manual effort**: Developers spend 5-10 minutes per PR summarizing changes
+- **Inconsistent quality**: PR descriptions vary wildly between team members
+- **Context switching**: Breaking coding flow to write documentation
+- **Repetitive work**: Explaining the same commits you already wrote
+
+## The Solution
+
+LazyPR automates PR creation in seconds:
+
+```bash
+lazypr main
+```
+
+That's it. LazyPR analyzes your commits, understands the changes, and generates a professional PR with:
+- A clear, concise title following conventional commits
+- Structured description with bullet points
+- Testing information derived from your commits
+- Proper formatting ready to paste into GitHub
+
+## How It Works
+
+1. **Analyze Commits**: LazyPR reads all commits between your feature branch and target branch
+2. **Smart Filtering**: Automatically excludes merge commits, dependency updates, and noise
+3. **AI Generation**: Sends commit data to your chosen AI provider (Groq, Cerebras)
+4. **Professional Output**: Receives a formatted PR title and description
+5. **Easy Copy**: Interactive menu to copy to clipboard or create PR directly
+
+## Key Benefits
+
+### Save Time
+
+Generate PRs in **10-15 seconds** instead of 5-10 minutes. For teams creating multiple PRs daily, that's hours saved per week.
+
+### Consistent Quality
+
+Every PR follows the same professional format, making code reviews faster and more efficient.
+
+### Team Collaboration
+
+International teams can generate PRs in 13 different languages while maintaining the same structure.
+
+### Focus on Coding
+
+Spend less time documenting and more time building. LazyPR handles the PR writing so you can stay in flow.
+
+## Who Uses LazyPR?
+
+**Individual Developers**: Save time and create professional PRs effortlessly.
+
+**Development Teams**: Standardize PR quality across the team with templates and shared configuration.
+
+**Open Source Projects**: Help contributors create consistent, high-quality PRs regardless of their experience level.
+
+**International Teams**: Generate PRs in each developer's native language while maintaining consistency.
+
+## Features at a Glance
+
+- **Multi-Provider Support**: Choose between Groq and Cerebras AI providers
+- **Smart Filtering**: Excludes irrelevant commits automatically
+- **Template Support**: Works with your existing `.github` PR templates
+- **Multilingual**: Generate PRs in 13 languages
+- **GitHub Integration**: Create PRs directly with `gh` CLI integration
+- **Customizable**: Add context guidance to match your team's style
+- **Fast**: Most PRs generated in 1-3 seconds
+
+<Callout type="success">
+  LazyPR is free and open source. Get started in under 2 minutes.
+</Callout>
+
+## Example Output
+
+**Your commits**:
+```
+feat: implement OAuth flow
+feat: add JWT tokens
+fix: handle token expiration
+test: add auth tests
+```
+
+**Generated PR**:
+```
+feat: Implement OAuth 2.0 authentication
+
+## Changes
+- Implement OAuth 2.0 authorization flow
+- Add JWT token generation and validation
+- Handle token expiration gracefully
+- Add comprehensive authentication tests
+
+## Testing
+Unit and integration tests added for auth flow
+Manual testing with Google and GitHub providers
+```
+
+Clean, professional, and ready to submit.
+
+## Getting Started
+
+Ready to transform your PR workflow?
+
+1. [Install LazyPR](/docs/introduction/installation) in under 1 minute
+2. [Create your first PR](/docs/introduction/quick-start) in seconds
+3. [Configure providers](/docs/configuration/providers) to match your needs
+
+<Callout type="info">
+  LazyPR is actively maintained and open source. Contributions welcome on [GitHub](https://github.com/R4ULtv/lazypr)!
+</Callout>
