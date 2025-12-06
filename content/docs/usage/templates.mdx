@@ -1,0 +1,163 @@
+---
+title: PR Templates
+description: Use and customize PR templates with LazyPR
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## What are PR Templates?
+
+PR templates are markdown files that define the structure and sections of your pull requests. LazyPR can use your existing templates from the `.github` folder to generate consistent, structured PR descriptions.
+
+## Using Templates
+
+Enable template mode with the `-t` or `--template` flag:
+
+```bash
+lazypr main --template
+```
+
+LazyPR will:
+1. Look for template files in `.github/` directory
+2. Parse the template structure
+3. Fill in the sections with AI-generated content based on your commits
+
+## Template Location
+
+LazyPR searches for templates in these locations:
+
+```
+.github/pull_request_template.md
+.github/PULL_REQUEST_TEMPLATE.md
+.github/pull_request_template/
+.github/PULL_REQUEST_TEMPLATE/
+```
+
+## Interactive Selection
+
+If you have multiple templates, LazyPR displays an interactive selector:
+
+```
+? Select a PR template:
+❯ feature_template.md
+  bugfix_template.md
+  hotfix_template.md
+```
+
+Use arrow keys to select and press Enter.
+
+## Template Format
+
+Templates typically include sections like:
+
+```markdown
+## Description
+<!-- What does this PR do? -->
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+
+## Testing
+<!-- How was this tested? -->
+
+## Checklist
+- [ ] Tests added
+- [ ] Documentation updated
+```
+
+LazyPR understands these sections and generates appropriate content for each.
+
+## Example: Feature Template
+
+**Template file** (`.github/pull_request_template.md`):
+
+```markdown
+## Summary
+<!-- Brief description -->
+
+## Changes
+<!-- List of changes -->
+
+## Testing
+<!-- Test plan -->
+
+## Screenshots
+<!-- If applicable -->
+```
+
+**LazyPR output**:
+
+```markdown
+## Summary
+Implement user authentication with OAuth 2.0 support
+
+## Changes
+- Add OAuth authentication flow
+- Implement JWT token management
+- Create login/logout endpoints
+- Add session persistence
+
+## Testing
+Tested with Google and GitHub OAuth providers
+Verified token refresh mechanism
+Validated session timeout handling
+
+## Screenshots
+N/A - Backend changes only
+```
+
+## Template Best Practices
+
+### Keep Sections Clear
+
+Use clear section headers that describe the content:
+
+```markdown
+## What Changed
+## Why These Changes
+## How to Test
+```
+
+### Use Comments for Guidance
+
+Add HTML comments to guide contributors:
+
+```markdown
+## Description
+<!-- Explain the problem this PR solves and your solution approach -->
+```
+
+LazyPR removes these comments and fills in the content.
+
+### Include Checklists
+
+Checklists help ensure PR completeness:
+
+```markdown
+## Checklist
+- [ ] Code follows style guidelines
+- [ ] Tests pass locally
+- [ ] Documentation updated
+```
+
+<Callout type="info">
+  LazyPR can intelligently fill in some checklist items based on your commits (e.g., detecting if tests were added).
+</Callout>
+
+## Without Templates
+
+If you don't use the `--template` flag, LazyPR generates a clean, structured description automatically:
+
+```bash
+lazypr main  # No template
+```
+
+Output will still be well-formatted with sections like "Changes", "Summary", and "Testing".
+
+## Troubleshooting
+
+**Template Not Found**: Ensure your template is in the `.github` directory and named correctly. Check for typos in the filename.
+
+**Empty Sections**: Some template sections may not be relevant to your commits. LazyPR will either fill them with "N/A" or leave them for manual completion.

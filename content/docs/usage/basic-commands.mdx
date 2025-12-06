@@ -1,0 +1,157 @@
+---
+title: Basic Commands
+description: Learn all LazyPR commands and options
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## Command Structure
+
+The basic LazyPR command structure:
+
+```bash
+lazypr [target-branch] [options]
+```
+
+Or use the short alias:
+
+```bash
+lzp [target-branch] [options]
+```
+
+## Target Branch
+
+Specify the branch to compare against (typically `main` or `master`):
+
+```bash
+lazypr main    # Compare against main branch
+lazypr develop # Compare against develop branch
+lazypr master  # Compare against master branch (default)
+```
+
+If no branch is specified, LazyPR defaults to `master`:
+
+```bash
+lazypr  # Same as: lazypr master
+```
+
+## Command Options
+
+### `-t, --template`
+
+Use a PR template from your `.github` folder.
+
+```bash
+lazypr main --template
+```
+
+If multiple templates exist, LazyPR shows an interactive selector.
+
+### `-l, --locale`
+
+Override the language for a single run.
+
+```bash
+lazypr main -l es  # Generate in Spanish
+lazypr main -l fr  # Generate in French
+lazypr main -l ja  # Generate in Japanese
+```
+
+Supported languages: en, es, pt, fr, de, it, ja, ko, zh, ru, nl, pl, tr
+
+### `-c, --context`
+
+Provide custom style guidance (max 200 characters) for this run only.
+
+```bash
+lazypr main -c "Focus on security improvements"
+lazypr main -c "Use bullet points and keep it brief"
+```
+
+<Callout type="info">
+  Context overrides your global CONTEXT setting for this run only.
+</Callout>
+
+### `--gh`
+
+Generate a GitHub CLI command instead of interactive menu.
+
+```bash
+lazypr main --gh
+```
+
+Outputs a ready-to-run `gh pr create` command that you can copy and execute.
+
+### `--no-filter`
+
+Include all commits without filtering.
+
+```bash
+lazypr main --no-filter
+```
+
+By default, LazyPR filters out merge commits, dependency updates, and formatting changes. Use this flag to include everything.
+
+### `-u, --usage`
+
+Display token usage statistics after generation.
+
+```bash
+lazypr main -u
+```
+
+Shows the number of tokens consumed by the AI request.
+
+## Combining Options
+
+You can combine multiple options:
+
+```bash
+lazypr main --template -l es -c "Keep descriptions concise" -u
+```
+
+This command:
+- Compares against `main` branch
+- Uses a PR template
+- Generates in Spanish
+- Applies custom context
+- Shows token usage
+
+## Configuration Commands
+
+Manage LazyPR settings:
+
+```bash
+# Set a configuration value
+lazypr config set SETTING_NAME=value
+
+# View all settings
+lazypr config list
+
+# View specific setting
+lazypr config get SETTING_NAME
+```
+
+## Help Command
+
+View all available commands and options:
+
+```bash
+lazypr --help
+```
+
+## Examples
+
+```bash
+# Basic usage with main branch
+lazypr main
+
+# Use template and show token usage
+lazypr main --template -u
+
+# Generate in French with custom guidance
+lazypr develop -l fr -c "Emphasize performance improvements"
+
+# Generate GitHub CLI command without filtering
+lazypr main --gh --no-filter
+```

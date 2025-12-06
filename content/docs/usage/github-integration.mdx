@@ -1,0 +1,199 @@
+---
+title: GitHub Integration
+description: Create pull requests directly with GitHub CLI
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+## Overview
+
+LazyPR integrates with GitHub CLI (`gh`) to streamline PR creation. Instead of copying title and description separately, generate a ready-to-execute `gh pr create` command.
+
+## Prerequisites
+
+You need GitHub CLI installed and authenticated:
+
+```bash
+# Install GitHub CLI
+# macOS
+brew install gh
+
+# Windows
+winget install GitHub.cli
+
+# Linux
+sudo apt install gh
+
+# Authenticate
+gh auth login
+```
+
+## Using the --gh Flag
+
+Generate a GitHub CLI command instead of the interactive menu:
+
+```bash
+lazypr main --gh
+```
+
+**Output**:
+
+```bash
+gh pr create --title "feat: Add user authentication" --body "## Changes
+- Implement OAuth 2.0 flow
+- Add JWT token management
+- Create authentication middleware
+
+## Testing
+Verified OAuth integration with Google provider"
+```
+
+<Callout type="success">
+  Copy the generated command and run it directly to create your PR!
+</Callout>
+
+## Complete Workflow
+
+<Steps>
+  <Step>
+    ### Generate the Command
+
+    ```bash
+    lazypr main --gh
+    ```
+  </Step>
+
+  <Step>
+    ### Copy and Execute
+
+    Copy the generated `gh pr create` command and run it:
+
+    ```bash
+    gh pr create --title "..." --body "..."
+    ```
+  </Step>
+
+  <Step>
+    ### PR Created
+
+    GitHub CLI creates the pull request and returns the URL:
+
+    ```
+    https://github.com/username/repo/pull/123
+    ```
+  </Step>
+</Steps>
+
+## Combining with Templates
+
+Use templates with GitHub integration:
+
+```bash
+lazypr main --gh --template
+```
+
+The generated command will include template-structured content in the body.
+
+## Additional gh Options
+
+Enhance the generated command with GitHub CLI options:
+
+```bash
+# Generate base command
+lazypr main --gh
+
+# Then add gh options when running
+gh pr create --title "..." --body "..." \
+  --draft \
+  --assignee @me \
+  --label enhancement \
+  --reviewer username
+```
+
+<Callout type="info">
+  LazyPR generates the title and body. You add any extra `gh pr create` options when executing the command.
+</Callout>
+
+## Workflow Integration
+
+### Shell Alias
+
+Create an alias for instant PR creation:
+
+```bash
+# Add to ~/.bashrc or ~/.zshrc
+alias prgh='lazypr main --gh | pbcopy && echo "Command copied to clipboard!"'
+```
+
+Usage:
+
+```bash
+prgh  # Generate and copy to clipboard
+```
+
+### CI/CD Integration
+
+Automate PR creation in scripts:
+
+```bash
+#!/bin/bash
+
+# Generate PR command
+PR_CMD=$(lazypr main --gh)
+
+# Execute if successful
+if [ $? -eq 0 ]; then
+  eval $PR_CMD
+else
+  echo "Failed to generate PR content"
+  exit 1
+fi
+```
+
+### GitHub Actions Example
+
+```yaml
+name: Create PR
+on:
+  push:
+    branches:
+      - feature/*
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install LazyPR
+        run: npm install -g lazypr
+
+      - name: Configure API Key
+        run: lazypr config set GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}
+
+      - name: Create PR
+        run: |
+          lazypr main --gh | sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+```
+
+## Benefits
+
+**Speed**: Generate and create PRs in one step without switching contexts.
+
+**Consistency**: Same AI-generated quality whether using interactive mode or CLI.
+
+**Automation**: Perfect for scripts and CI/CD pipelines.
+
+## Troubleshooting
+
+**gh command not found**: Install GitHub CLI and ensure it's in your PATH.
+
+**Authentication failed**: Run `gh auth login` to authenticate with GitHub.
+
+**Permission denied**: Ensure your GitHub token has `repo` and `workflow` permissions.
