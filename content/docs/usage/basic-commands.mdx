@@ -25,15 +25,15 @@ lzp [target-branch] [options]
 Specify the branch to compare against (typically `main` or `master`):
 
 ```bash
-lazypr main    # Compare against main branch
+lazypr main    # Compare against main branch (default)
 lazypr develop # Compare against develop branch
-lazypr master  # Compare against master branch (default)
+lazypr master  # Compare against master branch
 ```
 
-If no branch is specified, LazyPR defaults to `master`:
+If no branch is specified, LazyPR defaults to `main`:
 
 ```bash
-lazypr  # Same as: lazypr master
+lazypr  # Same as: lazypr main
 ```
 
 ## Command Options
