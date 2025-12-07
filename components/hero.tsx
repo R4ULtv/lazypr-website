@@ -58,7 +58,7 @@ export function Hero() {
               )}
             </button>
           </div>
-          <Link href="/docs">
+          <Link href="/docs/quick-start">
             <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-fd-ring focus-visible:ring-fd-ring/50 focus-visible:ring-[3px] h-10 rounded-md px-6 has-[>svg]:px-4 w-full sm:w-auto bg-fd-foreground text-fd-background hover:bg-fd-foreground/90 font-mono">
               Get Started
               <ArrowRightIcon className="ml-2 size-4" />
