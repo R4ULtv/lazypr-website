@@ -3,7 +3,7 @@
   "root": true,
   "pages": [
     "---Introduction---",
-    "index",
+    "quick-start",
     "what-is-lazypr",
     "installation",
     "---Configuration---",
