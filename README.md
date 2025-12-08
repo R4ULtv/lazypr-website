@@ -39,7 +39,7 @@ git clone https://github.com/r4ultv/lazypr-website.git
 cd lazypr-website
 
 # Install dependencies
-bun install
+pnpm install
 ```
 
 ### Development
@@ -47,7 +47,7 @@ bun install
 Run the development server:
 
 ```bash
-bun dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -57,7 +57,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 Build the documentation site for production:
 
 ```bash
-bun run build
+pnpm run build
 ```
 
 ### Type Checking
@@ -65,7 +65,7 @@ bun run build
 Run type checking:
 
 ```bash
-bun run types:check
+pnpm run types:check
 ```
 
 ## Project Structure
