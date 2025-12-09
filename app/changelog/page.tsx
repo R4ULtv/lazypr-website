@@ -11,6 +11,8 @@ import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import { LLMCopyButton, ViewOptions } from "@/components/ai/page-actions";
 
+export const revalidate = false;
+
 export default async function ChangelogPage() {
   const page = source.getPage(["changelog"]);
   if (!page) notFound();
