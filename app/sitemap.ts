@@ -25,6 +25,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 1,
     },
+    {
+      url: url("/changelog"),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: url("/llms.txt"),
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
+      url: url("/llms-full.txt"),
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
     ...items.filter((v) => v !== undefined),
   ];
 }
