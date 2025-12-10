@@ -12,9 +12,20 @@ export default function proxy(request: NextRequest) {
     }
   }
 
+  // Rewrite /changelog to /docs/changelog
+  if (request.nextUrl.pathname.startsWith("/changelog")) {
+    const targetPath = request.nextUrl.pathname.endsWith(".mdx")
+      ? "/docs/changelog.mdx"
+      : "/docs/changelog";
+    return NextResponse.rewrite(new URL(targetPath, request.nextUrl));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/docs/:path*"],
+  matcher: [
+    // Exclude API routes, static files, image optimizations, and image files
+    "/((?!api|_next/static|_next/image|.*\\.(?:png|webp|svg)$).*)",
+  ],
 };
