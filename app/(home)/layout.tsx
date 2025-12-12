@@ -7,6 +7,7 @@ import {
   SquareTerminalIcon,
   FileBracesIcon,
   HistoryIcon,
+  HeartIcon,
 } from "lucide-react";
 import {
   NavbarMenu,
@@ -133,28 +134,14 @@ export default function Layout({ children }: LayoutProps<"/">) {
           ),
         },
         {
-          type: "menu",
-          on: "menu",
           text: "Changelog",
-          items: [
-            {
-              text: "View Changelog",
-              url: "/changelog",
-              icon: <HistoryIcon />,
-            },
-          ],
+          url: "/changelog",
+          icon: <HistoryIcon />,
         },
         {
-          type: "custom",
-          on: "nav",
-          children: (
-            <Link
-              href="/changelog"
-              className="text-fd-muted-foreground hover:text-fd-foreground text-sm transition-colors"
-            >
-              Changelog
-            </Link>
-          ),
+          text: "Sponsor",
+          url: "https://github.com/sponsors/R4ULtv",
+          icon: <HeartIcon />,
         },
       ]}
     >
