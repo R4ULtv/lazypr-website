@@ -126,6 +126,41 @@ lazypr config set OPENAI_BASE_URL=
   This setting enables you to use any OpenAI-compatible API, including local models that are completely free and private!
 </Callout>
 
+### CUSTOM_LABELS
+
+Define custom labels to be suggested when creating pull requests.
+
+- **Default**: None
+- **Format**: Comma-separated list of label names
+- **Maximum**: 17 custom labels (20 total including 3 default labels)
+- **Validation rules**:
+  - Must start with a letter
+  - Can contain letters, numbers, hyphens, and underscores
+  - Maximum 50 characters per label
+
+```bash
+# Add custom labels
+lazypr config set CUSTOM_LABELS=security,performance,breaking-change
+
+# Add multiple labels
+lazypr config set CUSTOM_LABELS=ui,backend,docs,tests
+```
+
+<Callout type="info">
+  Custom labels are shown in both interactive mode and included in generated `gh pr create` commands. Make sure the labels exist in your GitHub repository before using them.
+</Callout>
+
+**Usage**:
+
+```bash
+# Interactive mode - labels are displayed for you to apply
+lazypr main
+
+# GitHub CLI mode - labels are included in the command
+lazypr main --gh
+# Output includes: --label security --label performance --label breaking-change
+```
+
 ## Managing Configuration
 
 ### View All Settings
