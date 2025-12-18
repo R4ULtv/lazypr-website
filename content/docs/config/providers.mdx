@@ -11,17 +11,21 @@ import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
 
 LazyPR uses AI providers to analyze your commits and generate professional PR descriptions. Choose the provider that best fits your needs based on speed, cost, and availability.
 
+<Callout type="warn">
+  **Structured Output Requirement**: LazyPR requires models that support structured output (JSON mode). Not all models or providers support this feature. Always verify your chosen model supports structured output before configuring it.
+</Callout>
+
 ## Provider Comparison
 
 | Provider | Speed | Free Tier | Reliability | Model Options | Setup | Status |
 |----------|-------|-----------|-------------|---------------|-------|--------|
 | Groq (Default) | Fast (1-3s) | Generous | High | Multiple | Easy | ✅ Available |
 | Cerebras | Ultra-fast (&lt;1s) | Varies | High | Multiple | Easy | ✅ Available |
-| OpenAI | Fast (2-4s) | Limited | High | GPT-5 Pro, Mini | Easy | 🚧 Soon |
+| OpenAI | Fast (2-4s) | Limited | High | GPT-4o, o1, o3-mini | Easy | ✅ Available |
+| Ollama | Variable | Free (Local) | High | Llama, Mistral, etc. | Easy | ✅ Available |
+| LM Studio | Variable | Free (Local) | High | Various quantized | Easy | ✅ Available |
 | Anthropic (Claude) | Fast (2-4s) | Limited | High | Opus, Sonnet, Haiku | Easy | 🚧 Soon |
 | Google AI (Gemini) | Fast (2-4s) | Generous | High | Gemini Pro, Flash | Easy | 🚧 Soon |
-| Ollama | Variable | Free (Local) | High | Llama, Mistral, etc. | Medium | 🚧 Soon |
-| LM Studio | Variable | Free (Local) | High | Various quantized | Medium | 🚧 Soon |
 
 <Callout type="info">
   Want to see a specific provider added sooner? Let us know on [GitHub](https://github.com/R4ULtv/lazypr/issues)!
@@ -45,7 +49,7 @@ lazypr config set GROQ_API_KEY=gsk_your_api_key_here
 ```
 
 <Callout type="success">
-  Groq offers generous free tier limits, perfect for getting started.
+  Groq offers generous free tier limits, perfect for getting started. All Groq models support structured output.
 </Callout>
 
 ### Setting Up Cerebras
@@ -65,11 +69,122 @@ lazypr config set CEREBRAS_API_KEY=your_cerebras_key_here
 lazypr config set PROVIDER=cerebras
 ```
 
+<Callout type="info">
+  Cerebras models support structured output. Verify your specific model choice supports this feature.
+</Callout>
+
+### Setting Up OpenAI
+
+#### Get Your API Key
+
+1. Visit [platform.openai.com](https://platform.openai.com)
+2. Sign up or log in to your account
+3. Navigate to API Keys section
+4. Create a new API key
+
+#### Configure LazyPR
+
+```bash
+# Set the API key
+lazypr config set OPENAI_API_KEY=sk-your_openai_key_here
+
+# Switch to OpenAI provider
+lazypr config set PROVIDER=openai
+```
+
+<Callout type="info">
+  OpenAI provides access to GPT-4o, o1, and o3-mini models for high-quality PR generation. GPT-4o and newer models support structured output. Verify your specific model choice supports this feature.
+</Callout>
+
+### Setting Up Ollama (Local AI)
+
+Ollama lets you run AI models locally on your machine - completely free and private.
+
+#### Install and Start Ollama
+
+1. Visit [ollama.com](https://ollama.com) and download Ollama for your platform
+2. Install and start the Ollama service
+3. Pull a model (e.g., Llama 3.3):
+
+```bash
+ollama pull llama3.3
+```
+
+#### Configure LazyPR
+
+```bash
+# Set provider to openai (Ollama uses OpenAI-compatible API)
+lazypr config set PROVIDER=openai
+
+# Point to local Ollama server
+lazypr config set OPENAI_BASE_URL=http://localhost:11434/v1
+
+# Set the model you pulled
+lazypr config set MODEL=llama3.3
+
+# No API key needed for local Ollama
+lazypr config set OPENAI_API_KEY=ollama
+```
+
+<Callout type="success">
+  Ollama is completely free, runs offline, and keeps your code private!
+</Callout>
+
+<Callout type="warn">
+  **Important**: Not all Ollama models support structured output (JSON mode). Check the model's documentation on [ollama.com/library](https://ollama.com/library) before using it with LazyPR. Models without structured output support will fail to generate PRs.
+</Callout>
+
+#### Recommended Models
+
+- **[deepseek-r1](https://ollama.com/library/deepseek-r1)** - Great balance of speed and quality
+- **[gemma3](https://ollama.com/library/gemma3)** - Faster, good for quick PRs
+- **[gpt-oss:20b](https://ollama.com/library/gpt-oss)** - Excellent alternative with good performance
+- **[qwen3](https://ollama.com/library/qwen3)** - Optimized for code understanding
+
+<Callout type="info">
+  Always test a new Ollama model with a small PR first to verify it supports structured output.
+</Callout>
+
+### Setting Up LM Studio (Local AI)
+
+LM Studio provides a user-friendly interface for running local AI models.
+
+#### Install and Setup
+
+1. Download LM Studio from [lmstudio.ai](https://lmstudio.ai)
+2. Install and launch the application
+3. Download a model from the built-in model browser
+4. Start the local server (click "Start Server" in LM Studio)
+
+#### Configure LazyPR
+
+```bash
+# Set provider to openai (LM Studio uses OpenAI-compatible API)
+lazypr config set PROVIDER=openai
+
+# Point to LM Studio local server (default port is 1234)
+lazypr config set OPENAI_BASE_URL=http://localhost:1234/v1
+
+# Set the model name as shown in LM Studio
+lazypr config set MODEL=your-model-name
+
+# No API key needed for local LM Studio
+lazypr config set OPENAI_API_KEY=lmstudio
+```
+
+<Callout type="info">
+  LM Studio supports many quantized models that run efficiently on consumer hardware.
+</Callout>
+
+<Callout type="warn">
+  **Important**: Not all models in LM Studio support structured output (JSON mode). Check the model's capabilities before using it with LazyPR. Models without structured output support will fail to generate PRs.
+</Callout>
+
 ## Switching Providers
 
 Change between providers anytime:
 
-<Tabs items={['Groq', 'Cerebras']}>
+<Tabs items={['Groq', 'Cerebras', 'OpenAI', 'Ollama', 'LM Studio']}>
   <Tab value="Groq">
     ```bash
     lazypr config set PROVIDER=groq
@@ -80,9 +195,32 @@ Change between providers anytime:
     lazypr config set PROVIDER=cerebras
     ```
   </Tab>
+  <Tab value="OpenAI">
+    ```bash
+    lazypr config set PROVIDER=openai
+    # Make sure to unset OPENAI_BASE_URL if switching from local providers
+    lazypr config set OPENAI_BASE_URL=
+    ```
+  </Tab>
+  <Tab value="Ollama">
+    ```bash
+    lazypr config set PROVIDER=openai
+    lazypr config set OPENAI_BASE_URL=http://localhost:11434/v1
+    ```
+  </Tab>
+  <Tab value="LM Studio">
+    ```bash
+    lazypr config set PROVIDER=openai
+    lazypr config set OPENAI_BASE_URL=http://localhost:1234/v1
+    ```
+  </Tab>
 </Tabs>
 
 Don't forget to set the appropriate API key for your chosen provider (see Getting Started section above).
+
+<Callout type="info">
+  **OpenAI-Compatible Providers**: Ollama, LM Studio, and any other OpenAI-compatible API can be used by setting `PROVIDER=openai` and pointing `OPENAI_BASE_URL` to the server endpoint.
+</Callout>
 
 ## Model Selection
 

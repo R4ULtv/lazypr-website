@@ -98,7 +98,7 @@ lazypr main -l ko  # Korean
 
 Switch between providers and models for different use cases:
 
-<Tabs items={['Groq', 'Cerebras']}>
+<Tabs items={['Groq', 'Cerebras', 'OpenAI']}>
   <Tab value="Groq">
     ```bash
     # Default model
@@ -112,6 +112,17 @@ Switch between providers and models for different use cases:
   <Tab value="Cerebras">
     ```bash
     lazypr main --provider cerebras
+    ```
+  </Tab>
+  <Tab value="OpenAI">
+    ```bash
+    # Use OpenAI provider
+    lazypr main --provider openai
+
+    # Specify model
+    lazypr config set MODEL=gpt-4o
+    lazypr config set MODEL=o1
+    lazypr config set MODEL=o3-mini
     ```
   </Tab>
 </Tabs>
@@ -232,7 +243,7 @@ git log main..HEAD --oneline  # Should show commits
 Verify your API key is configured:
 
 ```bash
-lazypr config list  # Check GROQ_API_KEY or CEREBRAS_API_KEY
+lazypr config list  # Check GROQ_API_KEY, CEREBRAS_API_KEY, or OPENAI_API_KEY
 ```
 
 ### Rate Limiting

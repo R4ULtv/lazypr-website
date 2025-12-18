@@ -22,6 +22,22 @@ GROQ_API_KEY=your-groq-api-key-here
 
 # Provider defaults to groq if not specified
 # PROVIDER=groq
+
+# Alternative: Use OpenAI
+# OPENAI_API_KEY=sk-your-openai-api-key-here
+# PROVIDER=openai
+
+# Alternative: Use Ollama (local)
+# PROVIDER=openai
+# OPENAI_BASE_URL=http://localhost:11434/v1
+# OPENAI_API_KEY=ollama
+# MODEL=llama3.3
+
+# Alternative: Use LM Studio (local)
+# PROVIDER=openai
+# OPENAI_BASE_URL=http://localhost:1234/v1
+# OPENAI_API_KEY=lmstudio
+# MODEL=your-model-name
 ```
 
 <Callout type="info">
@@ -120,9 +136,13 @@ Configuration supporting multiple AI providers with easy switching. Ideal for pr
 # Provider API Keys
 GROQ_API_KEY=your-groq-api-key-here
 CEREBRAS_API_KEY=your-cerebras-api-key-here
+OPENAI_API_KEY=sk-your-openai-api-key-here
 
-# Active Provider (groq or cerebras)
+# Active Provider (groq, cerebras, or openai)
 PROVIDER=groq
+
+# Optional: For OpenAI-compatible APIs (Ollama, LM Studio, etc.)
+# OPENAI_BASE_URL=http://localhost:11434/v1
 
 # Model Selection
 MODEL=llama-3.3-70b-versatile
@@ -142,8 +162,12 @@ TIMEOUT=45000
 # Switch to Cerebras
 lazypr config set PROVIDER=cerebras
 
+# Switch to OpenAI
+lazypr config set PROVIDER=openai
+
 # Or use flag for one-time override
 lazypr main --provider cerebras
+lazypr main --provider openai
 
 # Check current provider
 lazypr config get PROVIDER
@@ -156,6 +180,80 @@ lazypr config get PROVIDER
 lazypr main --provider groq || lazypr main --provider cerebras
 ```
 
+## Local AI Configuration
+
+Configuration for running AI models locally with Ollama or LM Studio. Perfect for privacy, offline use, and zero API costs.
+
+```bash title="~/.lazypr"
+# LazyPR Local AI Configuration
+# Run AI models completely offline and free
+
+# Provider (use OpenAI-compatible mode)
+PROVIDER=openai
+
+# Local server endpoint
+OPENAI_BASE_URL=http://localhost:11434/v1  # Ollama
+# OPENAI_BASE_URL=http://localhost:1234/v1  # LM Studio
+
+# Placeholder API key (not validated for local)
+OPENAI_API_KEY=ollama
+
+# Model name (must match installed model)
+MODEL=llama3.3
+
+# Standard settings
+DEFAULT_BRANCH=main
+FILTER_COMMITS=true
+```
+
+<Callout type="success">
+  **Benefits of Local AI**:
+  - 🆓 Completely free - no API costs
+  - 🔒 Private - your code never leaves your machine
+  - ⚡ Fast - no network latency
+  - 📴 Offline - works without internet
+</Callout>
+
+### Setting Up Local AI
+
+<Tabs items={['Ollama', 'LM Studio']}>
+  <Tab value="Ollama">
+    ```bash
+    # 1. Install Ollama from ollama.com
+    
+    # 2. Pull a model
+    ollama pull llama3.3
+    
+    # 3. Configure LazyPR
+    lazypr config set PROVIDER=openai
+    lazypr config set OPENAI_BASE_URL=http://localhost:11434/v1
+    lazypr config set OPENAI_API_KEY=ollama
+    lazypr config set MODEL=llama3.3
+    
+    # 4. Generate PR
+    lazypr main
+    ```
+  </Tab>
+  <Tab value="LM Studio">
+    ```bash
+    # 1. Install LM Studio from lmstudio.ai
+    
+    # 2. Download a model in the app
+    
+    # 3. Start the local server
+    
+    # 4. Configure LazyPR
+    lazypr config set PROVIDER=openai
+    lazypr config set OPENAI_BASE_URL=http://localhost:1234/v1
+    lazypr config set OPENAI_API_KEY=lmstudio
+    lazypr config set MODEL=your-model-name
+    
+    # 5. Generate PR
+    lazypr main
+    ```
+  </Tab>
+</Tabs>
+
 ## Configuration Reference
 
 ### All Available Settings
@@ -164,7 +262,9 @@ lazypr main --provider groq || lazypr main --provider cerebras
 |---------|-------------|---------|
 | `GROQ_API_KEY` | Groq API key | - |
 | `CEREBRAS_API_KEY` | Cerebras API key | - |
-| `PROVIDER` | AI provider (`groq` or `cerebras`) | `groq` |
+| `OPENAI_API_KEY` | OpenAI API key (or placeholder for local) | - |
+| `OPENAI_BASE_URL` | Custom OpenAI-compatible API endpoint | - |
+| `PROVIDER` | AI provider (`groq`, `cerebras`, or `openai`) | `groq` |
 | `MODEL` | Model to use | Provider default |
 | `DEFAULT_BRANCH` | Target branch for comparison | `main` |
 | `LOCALE` | Output language | `en` |

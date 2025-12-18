@@ -20,7 +20,7 @@ lazypr config set SETTING_NAME=value
 
 The AI provider to use for generating PR content.
 
-- **Values**: `groq` or `cerebras`
+- **Values**: `groq`, `cerebras`, or `openai`
 - **Default**: `groq`
 
 ```bash
@@ -100,6 +100,30 @@ lazypr config set CONTEXT="Focus on business impact in descriptions"
 
 <Callout type="info">
   Context helps AI tailor the PR style to your team's preferences.
+</Callout>
+
+### OPENAI_BASE_URL
+
+Custom endpoint for OpenAI-compatible APIs. Use this to connect to local AI providers like Ollama or LM Studio.
+
+- **Default**: None (uses OpenAI's official API)
+- **Common values**:
+  - Ollama: `http://localhost:11434/v1`
+  - LM Studio: `http://localhost:1234/v1`
+
+```bash
+# For Ollama
+lazypr config set OPENAI_BASE_URL=http://localhost:11434/v1
+
+# For LM Studio
+lazypr config set OPENAI_BASE_URL=http://localhost:1234/v1
+
+# Reset to use official OpenAI
+lazypr config set OPENAI_BASE_URL=
+```
+
+<Callout type="success">
+  This setting enables you to use any OpenAI-compatible API, including local models that are completely free and private!
 </Callout>
 
 ## Managing Configuration
