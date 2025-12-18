@@ -21,15 +21,17 @@ export function Hero() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#1a1a1a_1px,transparent_1px),linear-gradient(to_bottom,#1a1a1a_1px,transparent_1px)] bg-[size:2rem_2rem] opacity-30" />
 
       <div className="relative mx-auto max-w-4xl text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-fd-card px-4 py-1.5 mb-8">
-          <span className="relative flex size-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-fd-primary opacity-75" />
-            <span className="relative inline-flex rounded-full size-2 bg-fd-primary" />
-          </span>
-          <span className="font-mono text-sm text-fd-muted-foreground">
-            Powered by AI (Groq & Cerebras)
-          </span>
-        </div>
+        <Link href="/docs/config/providers">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-fd-card px-4 py-1.5 mb-8 hover:border-fd-accent transition-colors cursor-pointer">
+            <span className="relative flex size-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-fd-primary opacity-75" />
+              <span className="relative inline-flex rounded-full size-2 bg-fd-primary" />
+            </span>
+            <span className="font-mono text-sm text-fd-muted-foreground">
+              Powered by your favorite AI
+            </span>
+          </div>
+        </Link>
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-fd-foreground mb-6 text-balance">
           The lazy way to write{" "}
